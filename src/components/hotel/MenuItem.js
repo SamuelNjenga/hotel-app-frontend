@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
 
 const useStyles = makeStyles({
 	typo: {
@@ -18,8 +19,25 @@ const useStyles = makeStyles({
 	}
 });
 
-const MenuItem = ({itemName,itemDescription,itemPrice}) => {
+const MenuItem = ({id,itemName,itemDescription,itemPrice}) => {
 	const classes = useStyles();
+	const {carts,setCarts} = useCart()
+
+	const addToCart = () => {
+		const item = { itemName, itemPrice, /*count: props.count,*/ id };
+
+		for (let i in carts) {
+			if (carts[i].itemName === itemName) {
+				carts[i].count += 1;
+				console.log('count plus one');
+				console.log(carts);
+				return;
+			}
+		}
+		setCarts((curr) => [ ...curr, item ]);
+
+		console.log(carts);
+	};
 
 	return (
 		<div>
@@ -43,7 +61,7 @@ const MenuItem = ({itemName,itemDescription,itemPrice}) => {
 						</Button>
 					</Link>
 
-					<Button color="primary" variant="outlined" className={classes.btn} onClick={() => console.log('clicked')}>
+					<Button color="primary" variant="outlined" className={classes.btn} onClick={addToCart}>
 						Add To Cart
 					</Button>
 				</CardActions>
